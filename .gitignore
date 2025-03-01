@@ -1,0 +1,8 @@
+node_modules/
+.env
+
+config/local.js        # Local configuration files
+*.log                  # Log files
+*.swp                  # Swap files
+.DS_Store              # macOS desktop services store
+/dist
