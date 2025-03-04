@@ -1,4 +1,3 @@
-const e = require("express");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -38,7 +37,7 @@ const userSchema = new mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 const eventsSchema = new mongoose.Schema({
-  evenName: {
+  eventName: {
     type: String,
     required: true,
     trim: true,
