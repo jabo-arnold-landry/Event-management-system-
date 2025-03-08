@@ -11,9 +11,8 @@ const authenticateUser = asyncHandler(async (req, res, next) => {
     try {
       // getting the token from the header by spliting the Bearer with the jwt
       token = req.headers.authorization.split(" ")[1];
-      //checking if the token matches the one assigned to a user when logging in
       const decodedUserInfo = jwt.verify(token, process.env.SECRET_WORD);
-      // assigninng the user object from decoded information to req.user
+
       req.user = decodedUserInfo.user;
       next();
     } catch (err) {
