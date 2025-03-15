@@ -36,7 +36,7 @@ const logUser = asynHandler(async (req, res) => {
           },
         },
         process.env.SECRET_WORD,
-        { expiresIn: "1h" }
+        { expiresIn: "6h" }
       );
       res.status(200);
       return res.json({ message: `logged in as ${user.names}`, token });

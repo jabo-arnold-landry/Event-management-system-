@@ -24,6 +24,7 @@ const getEvent = asynHandler(async (req, res) => {
 
 //creating an event
 const createEvent = asynHandler(async (req, res) => {
+  const userId = req.user.id;
   const {
     eventName,
     eventDescription,
@@ -31,7 +32,7 @@ const createEvent = asynHandler(async (req, res) => {
     eventDate,
     eventEndTime,
   } = req.body;
-  const userId = req.user.id;
+
   const event = await Event.create({
     eventName,
     eventDescription,
@@ -47,7 +48,7 @@ const createEvent = asynHandler(async (req, res) => {
     { new: true }
   );
   if (event) {
-    res.status(200).json({ message: "the event created successfuly" });
+    res.status(201).json({ message: "the event created successfuly" });
   }
 });
 
@@ -75,29 +76,43 @@ const eventStatusUpdate = asynHandler(async (req, res) => {
 //event updating function
 const updateEvent = asynHandler(async (req, res) => {
   const eventId = req.params.id;
-  const { eventLocation, eventDate, eventEndTime } = req.body;
-  const upadateEvent = await Event.updateMany(
-    eventId,
-    { $set: [{ eventLocation, eventDate, eventEndTime }] },
-    { new: true, runValidators: true }
-  );
-  res.status(200).json({ message: "the event updated successfuly" });
-  if (!updateEvent || ![eventLocation, eventDate, eventEndTime]) {
-    res.status(400).json({ message: "unable to update the event " });
+  const userId = req.user.id;
+  const event = await Event.findById(eventId);
+  if (event.eventOwner.toString() !== userId.toString()) {
+    res.status(403).json({ message: "Unauthorized" });
   }
+  const updatedEvent = await Event.findByIdAndUpdate(eventId, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updatedEvent || !event) {
+    return res.status(500).json({ message: "something went wrong try again" });
+  }
+  res.status(200).json({ message: "the event updated successfuly" });
 });
+
 //deleting an event
 const deleteEvent = asynHandler(async (req, res) => {
   const eventId = req.params.id;
-  const deleteEvent = await Event.findByIdAndDelete(eventId);
-  if (deleteEvent) {
+  const userId = req.user.id;
+  const event = await Event.findById(eventId);
+  if (!event) {
+    return res.status(404).json({ message: "the event not found" });
+  }
+  //checking if the owner is one deleting the event
+  if (event.eventOwner.toString() === userId.toString()) {
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+    //updating the reference in table user
+    await User.findByIdAndUpdate(
+      userId,
+      { $pull: { event: eventId } },
+      { new: true }
+    );
     res
       .status(200)
-      .json({ message: `deleted ${deleteEvent.eventName}successfuly` });
+      .json({ message: `${deletedEvent.eventName} deleted successfully` });
   } else {
-    res
-      .status(400)
-      .json({ message: "unable to delete the event double check the id" });
+    res.status(403).json({ message: "Unauthorized" });
   }
 });
 
