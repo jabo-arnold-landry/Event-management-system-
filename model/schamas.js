@@ -30,7 +30,14 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    particpants: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attndance",
+      },
+    ],
   },
+
   { timestamps: true }
 );
 
@@ -96,6 +103,10 @@ const attandanceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
       required: true,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }
