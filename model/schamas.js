@@ -113,4 +113,4 @@ const attandanceSchema = new mongoose.Schema(
 );
 
 const Attendance = mongoose.model("Attendance", attandanceSchema);
-module.exports = { User, Event, Attendance };
+module.exports = { User, Event, Attendance }
