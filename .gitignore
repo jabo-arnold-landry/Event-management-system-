@@ -6,3 +6,6 @@ config/local.js        # Local configuration files
 *.swp                  # Swap files
 .DS_Store              # macOS desktop services store
 
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat

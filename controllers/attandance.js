@@ -22,4 +22,4 @@ const attandeesCreation = asynHandler(async (req, res) => {
   }
 });
 
-module.exports = { attandeesCreation };
+module.exports = { attandeesCreation }
